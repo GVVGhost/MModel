@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+    <start>
+        <ref name="HBox"/>
+    </start>
+    <define name="HBox">
+        <element name="HBox">
+            <optional>
+                <attribute name="maxHeight">
+                    <data type="double"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="fx:controller">
+                    <data type="NCName"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="fx:id">
+                    <data type="NCName"/>
+                </attribute>
+            </optional>
+            <optional>
+                <ref name="children"/>
+            </optional>
+        </element>
+    </define>
+    <define name="children">
+        <element name="children">
+            <optional>
+                <element name="CheckBox">
+                    <attribute name="alignment">
+                        <data type="NCName"/>
+                    </attribute>
+                    <attribute name="contentDisplay">
+                        <data type="NCName"/>
+                    </attribute>
+                    <attribute name="graphicTextGap">
+                        <data type="decimal"/>
+                    </attribute>
+                    <attribute name="lineSpacing">
+                        <data type="decimal"/>
+                    </attribute>
+                    <attribute name="mnemonicParsing">
+                        <data type="boolean"/>
+                    </attribute>
+                    <attribute name="prefHeight">
+                        <data type="decimal"/>
+                    </attribute>
+                    <attribute name="prefWidth">
+                        <data type="decimal"/>
+                    </attribute>
+                    <attribute name="text"/>
+                    <attribute name="textAlignment">
+                        <data type="NCName"/>
+                    </attribute>
+                    <attribute name="textOverrun">
+                        <data type="NCName"/>
+                    </attribute>
+                    <attribute name="fx:id">
+                        <data type="NCName"/>
+                    </attribute>
+                    <element name="opaqueInsets">
+                        <ref name="Insets"/>
+                    </element>
+                    <element name="VBox.margin">
+                        <ref name="Insets"/>
+                    </element>
+                    <element name="padding">
+                        <ref name="Insets"/>
+                    </element>
+                    <element name="font">
+                        <element name="Font">
+                            <attribute name="name">
+                                <data type="NCName"/>
+                            </attribute>
+                            <attribute name="size">
+                                <data type="decimal"/>
+                            </attribute>
+                        </element>
+                    </element>
+                </element>
+            </optional>
+            <optional>
+                <element name="ScrollPane">
+                    <attribute name="HBox.hgrow">
+                        <data type="NCName"/>
+                    </attribute>
+                    <attribute name="hbarPolicy">
+                        <data type="NCName"/>
+                    </attribute>
+                    <attribute name="maxHeight">
+                        <data type="double"/>
+                    </attribute>
+                    <attribute name="maxWidth">
+                        <data type="double"/>
+                    </attribute>
+                    <attribute name="minHeight">
+                        <data type="decimal"/>
+                    </attribute>
+                    <attribute name="minWidth">
+                        <data type="decimal"/>
+                    </attribute>
+                    <attribute name="pannable">
+                        <data type="boolean"/>
+                    </attribute>
+                    <attribute name="vbarPolicy">
+                        <data type="NCName"/>
+                    </attribute>
+                    <element name="content">
+                        <ref name="HBox"/>
+                    </element>
+                </element>
+            </optional>
+            <optional>
+                <choice>
+                    <element name="Separator">
+                        <attribute name="opacity">
+                            <data type="decimal"/>
+                        </attribute>
+                        <attribute name="orientation">
+                            <data type="NCName"/>
+                        </attribute>
+                        <attribute name="prefHeight">
+                            <data type="decimal"/>
+                        </attribute>
+                        <attribute name="prefWidth">
+                            <data type="decimal"/>
+                        </attribute>
+                    </element>
+                    <element name="VBox">
+                        <attribute name="minHeight">
+                            <data type="NMTOKEN"/>
+                        </attribute>
+                        <attribute name="minWidth">
+                            <data type="NMTOKEN"/>
+                        </attribute>
+                        <attribute name="prefHeight">
+                            <data type="decimal"/>
+                        </attribute>
+                        <attribute name="prefWidth">
+                            <data type="decimal"/>
+                        </attribute>
+                        <attribute name="spacing">
+                            <data type="decimal"/>
+                        </attribute>
+                        <ref name="children"/>
+                        <element name="HBox.margin">
+                            <ref name="Insets"/>
+                        </element>
+                    </element>
+                </choice>
+            </optional>
+            <optional>
+                <element name="GridPane">
+                    <element name="columnConstraints">
+                        <oneOrMore>
+                            <element name="ColumnConstraints">
+                                <attribute name="hgrow">
+                                    <data type="NCName"/>
+                                </attribute>
+                                <optional>
+                                    <attribute name="maxWidth">
+                                        <data type="decimal"/>
+                                    </attribute>
+                                </optional>
+                                <attribute name="minWidth">
+                                    <data type="decimal"/>
+                                </attribute>
+                                <attribute name="prefWidth">
+                                    <data type="decimal"/>
+                                </attribute>
+                            </element>
+                        </oneOrMore>
+                    </element>
+                    <element name="rowConstraints">
+                        <oneOrMore>
+                            <element name="RowConstraints">
+                                <attribute name="minHeight">
+                                    <data type="decimal"/>
+                                </attribute>
+                                <attribute name="prefHeight">
+                                    <data type="decimal"/>
+                                </attribute>
+                                <attribute name="vgrow">
+                                    <data type="NCName"/>
+                                </attribute>
+                            </element>
+                        </oneOrMore>
+                    </element>
+                    <ref name="children"/>
+                </element>
+            </optional>
+            <choice>
+                <zeroOrMore>
+                    <choice>
+                        <element name="Label">
+                            <optional>
+                                <attribute name="GridPane.rowIndex">
+                                    <data type="integer"/>
+                                </attribute>
+                            </optional>
+                            <attribute name="text"/>
+                            <optional>
+                                <attribute name="textAlignment">
+                                    <data type="NCName"/>
+                                </attribute>
+                            </optional>
+                            <ref name="GridPane.margin"/>
+                        </element>
+                        <element name="TextField">
+                            <attribute name="GridPane.columnIndex">
+                                <data type="integer"/>
+                            </attribute>
+                            <optional>
+                                <attribute name="GridPane.rowIndex">
+                                    <data type="integer"/>
+                                </attribute>
+                            </optional>
+                            <optional>
+                                <attribute name="accessibleText">
+                                    <data type="NMTOKEN"/>
+                                </attribute>
+                            </optional>
+                            <attribute name="alignment">
+                                <data type="NCName"/>
+                            </attribute>
+                            <attribute name="promptText">
+                                <data type="decimal"/>
+                            </attribute>
+                            <attribute name="text">
+                                <data type="decimal"/>
+                            </attribute>
+                            <attribute name="fx:id">
+                                <data type="NCName"/>
+                            </attribute>
+                            <ref name="GridPane.margin"/>
+                        </element>
+                    </choice>
+                </zeroOrMore>
+                <zeroOrMore>
+                    <element name="Button">
+                        <optional>
+                            <attribute name="GridPane.columnIndex">
+                                <data type="integer"/>
+                            </attribute>
+                        </optional>
+                        <optional>
+                            <attribute name="GridPane.rowIndex">
+                                <data type="integer"/>
+                            </attribute>
+                        </optional>
+                        <attribute name="alignment">
+                            <data type="NCName"/>
+                        </attribute>
+                        <attribute name="contentDisplay">
+                            <data type="NCName"/>
+                        </attribute>
+                        <attribute name="maxHeight">
+                            <data type="double"/>
+                        </attribute>
+                        <attribute name="maxWidth">
+                            <data type="double"/>
+                        </attribute>
+                        <attribute name="mnemonicParsing">
+                            <data type="boolean"/>
+                        </attribute>
+                        <attribute name="onAction"/>
+                        <attribute name="text"/>
+                        <attribute name="textAlignment">
+                            <data type="NCName"/>
+                        </attribute>
+                        <attribute name="fx:id">
+                            <data type="NCName"/>
+                        </attribute>
+                        <ref name="GridPane.margin"/>
+                    </element>
+                </zeroOrMore>
+            </choice>
+        </element>
+    </define>
+    <define name="Insets">
+        <element name="Insets">
+            <optional>
+                <attribute name="bottom">
+                    <data type="decimal"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="left">
+                    <data type="decimal"/>
+                </attribute>
+            </optional>
+            <optional>
+                <attribute name="right">
+                    <data type="decimal"/>
+                </attribute>
+            </optional>
+            <attribute name="top">
+                <data type="decimal"/>
+            </attribute>
+        </element>
+    </define>
+    <define name="GridPane.margin">
+        <element name="GridPane.margin">
+            <ref name="Insets"/>
+        </element>
+    </define>
+</grammar>
