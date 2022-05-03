@@ -30,11 +30,7 @@ public class SimulationPoint implements Recordable {
 
     @Override
     public double getValue(Param name) {
-        for (Value v : myListOfValues) {
-            if (v.getParam().equals(name)) {
-                return v.getValue();
-            }
-        }
+        for (Value v : myListOfValues) if (v.getParam().equals(name)) return v.getValue();
         return 0.0D;
     }
 

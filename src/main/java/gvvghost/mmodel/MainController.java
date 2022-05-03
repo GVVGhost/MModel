@@ -15,18 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.util.HashMap;
-
-
 public class MainController {
-    @FXML
-    private Button btnSimulate;
-    @FXML
-    private Button btnInsert;
-    @FXML
-    private Button btnReset;
-    @FXML
-    private Button btnClear;
     @FXML
     private HBox chartHBox;
     @FXML
@@ -46,76 +35,48 @@ public class MainController {
     @FXML
     private TextField tfVelocInit;
     @FXML
-    private CheckBox experimentalCB;
-    @FXML
-    private Button btnAddData;
-    @FXML
-    private Button btnDeleteLast;
+    private CheckBox varRS;
 
-
-
-    private HashMap<Integer,SimulationPointsMap> maps;
-
-
-    private Alert alert = new Alert(Alert.AlertType.ERROR, "Error occurred");
-
-    public MainController() {
-        maps = new HashMap<>();
-
-    }
-
-    public void simulate() {
-        if (experimentalCB.isSelected()){
-//            System.out.println("Selected experimental mode");
-            experimental.run();
-        } else {
-            runnable.run();
-        }
-    }
+    private final Alert alert = new Alert(Alert.AlertType.ERROR, "Error occurred");
 
     public void insert() {
-        S.setAllParams(getDouble(tfC1.getText(), P.C1 + "", tfC1),
-                getDouble(tfC2.getText(), P.C2 + "", tfC2),
-                getDouble(tfC3.getText(), P.C3 + "", tfC3),
-                getDouble(tfBeta.getText(), P.BetaDef + "", tfBeta),
-                (int) getDouble(tfDistance.getText(), P.DistDef + "", tfDistance),
-                (int) getDouble(tfTime.getText(), P.TimeDef + "",tfTime),
-                getDouble(tfCurrInit.getText(), P.I_INITIAL + "", tfCurrInit),
-                getDouble(tfVelocInit.getText(), P.V_INITIAL + "", tfVelocInit));
+        S.c1 = getFromTF(tfC1, P.C1);
+        S.c2 = getFromTF(tfC2, P.C2);
+        S.c3 = getFromTF(tfC3, P.C3);
+        S.beta = getFromTF(tfBeta, P.betaDef);
+        S.iInit = getFromTF(tfCurrInit, P.I_INITIAL);
+        S.vInit = getFromTF(tfVelocInit, P.V_INITIAL);
+        S.timeLimit = (int) getFromTF(tfTime, P.timeDef);
+        S.distanceLimit = (int) getFromTF(tfDistance, P.distDef);
     }
 
     public void reset() {
         tfC1.setText(P.C1 + "");
         tfC2.setText(P.C2 + "");
         tfC3.setText(P.C3 + "");
-        tfBeta.setText(P.BetaDef + "");
-        tfDistance.setText(P.DistDef + "");
-        tfTime.setText(P.TimeDef + "");
+        tfBeta.setText(P.betaDef + "");
+        tfTime.setText(P.timeDef + "");
+        tfDistance.setText(P.distDef + "");
         tfCurrInit.setText(P.I_INITIAL + "");
         tfVelocInit.setText(P.V_INITIAL + "");
         insert();
-    }
-
-    public void addNewLinesToCharts(){
-        chartHBox.getChildren().get(chartHBox.getChildren().size());
-
-    }
-
-    public void deleteLastLinesFromCharts(){
-
     }
 
     public void clear() {
         chartHBox.getChildren().removeAll(chartHBox.getChildren());
     }
 
-    private final Runnable runnable = new Runnable() {
+    public void simulate() {
+        runnable.run();
+        /*if (varRS.isSelected()) variableSlopeSim.run();
+        else constantSlopeSim.run();*/
+    }
+
+    private final Runnable constantSlopeSim = new Runnable() {
         @Override
         public void run() {
-            if (chartHBox.getChildren().size() >= 3) {
-                chartHBox.getChildren().remove(0);
-            }
-            SimulationPointsMap map = S.simulateVCPB(null);
+            if (chartHBox.getChildren().size() > 2) chartHBox.getChildren().remove(0);
+            SimulationPointsMap map = S.simulateVCPB();
             VBox vbox = ChartManager.getVboxSCharts(map, Param.TAU);
             if (vbox != null) {
                 vbox.getChildren().add(createResultPane(map));
@@ -124,14 +85,13 @@ public class MainController {
         }
     };
 
-    private final Runnable experimental = new Runnable() {
+    private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (chartHBox.getChildren().size() >= 3) {
-                chartHBox.getChildren().remove(0);
-            }
-            SimulationPointsMap betamap = S.createSimpleBetaMap(S.beta, S.distanceLimit, S.timeLimit);
-            SimulationPointsMap map = S.simulateVSCB_AnD(betamap);
+            if (chartHBox.getChildren().size() > 2) chartHBox.getChildren().remove(0);
+            SimulationPointsMap map;
+            if (!varRS.isSelected()) map = S.simulateVSCB_AnD(null);
+            else map = S.simulateVSCB_AnD(S.createSimpleBetaMap(S.beta, S.distanceLimit, S.timeLimit));
             VBox vbox = ChartManager.getVboxSCharts(map, Param.TAU);
             if (vbox != null) {
                 vbox.getChildren().add(createResultPane(map));
@@ -144,18 +104,15 @@ public class MainController {
         SimulationPoint sp = map.getPoint(map.getMapSize() - 1);
         GridPane pane = new GridPane();
         String[][] strings = {
-                {"C1:","" + S.c1,
-                "Beta:","" + S.beta,
-                "C(" + S.timeLimit + "):","" + C.roundAvoid(sp.getValue(Param.CURRENT), 3)},
-                {"C2:","" + S.c2,
-                "Dist:", "" + S.distanceLimit,
-                "V(" + S.timeLimit + "):","" + C.roundAvoid(sp.getValue(Param.VELOCITY), 3)},
-                {"C3:","" + S.c3,
-                "Time:", "" + S.timeLimit,
-                "P(" + S.timeLimit + "):", "" + C.roundAvoid(sp.getValue(Param.PATH), 3)},
-                {"S(C):", "" + C.roundAvoid(integrate(map, P.K, Param.CURRENT),3),
-                "S(V):", "" + C.roundAvoid(integrate(map, P.K, Param.VELOCITY),3),
-                "--", "--"}
+                {"C1:","" + S.c1, "Beta:","" + S.beta, "C(" + S.timeLimit + "):",
+                    "" + C.round(sp.getValue(Param.CURRENT), 3)},
+                {"C2:","" + S.c2, "Dist:", "" + S.distanceLimit, "V(" + S.timeLimit + "):",
+                    "" + C.round(sp.getValue(Param.VELOCITY), 3)},
+                {"C3:","" + S.c3, "Time:", "" + S.timeLimit, "P(" + S.timeLimit + "):",
+                    "" + C.round(sp.getValue(Param.PATH), 3)},
+                {"S(C):", "" + C.round(integrate(map, Param.CURRENT),3),
+                    "S(V):", "" + C.round(integrate(map, Param.VELOCITY),3),
+                    "--", "--"}
         };
 
         for (int r = 0; r < strings.length; r++){
@@ -175,37 +132,32 @@ public class MainController {
         return pane;
     }
 
-    private double getDouble(String line, String defVal, TextField tf) {
+    private double getFromTF(TextField fromTextField, double defValue){
+        return getDouble(fromTextField.getText(), String.valueOf(defValue), fromTextField);
+    }
+
+    private double getDouble(String newLine, String defaultLine, TextField tf) {
         double ans = 0.0D;
-        if (line != null) {
-            try {
-                ans = Double.parseDouble(line);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                ans = Double.parseDouble(defVal);
-                tf.setText(ans+"");
-                errorMessage("Invalid value entered. The value restored to default.");
-            }
+//        if (newLine == null) return ans;
+        try {
+            ans = Double.parseDouble(newLine);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            ans = Double.parseDouble(defaultLine);
+            tf.setText(String.valueOf(ans));
+            errorMessage("Invalid value entered. Restore defaults.");
         }
         return ans;
     }
 
-    private double integrate(SimulationPointsMap map, double step, Param param) {
+    private double integrate(SimulationPointsMap map, Param param) {
         double result = 0.0D;
-        int size = size=map.getMapSize();
-        if (size!=0){
-            for (int i = 0; size > i; i++) {
-                result += map.getPointValue(i, param)*step;
-            }
-        }
-        return result;
+        for (int i = 0; i < map.getMapSize(); i++) result += map.getPointValue(i, param);
+        return result * P.K;
     }
-
 
     private void errorMessage(String line){
         alert.setContentText(line);
-        if(!alert.isShowing()){
-            alert.show();
-        }
+        if(!alert.isShowing()) alert.show();
     }
 }

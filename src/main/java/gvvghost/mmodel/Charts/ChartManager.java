@@ -18,14 +18,13 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 
 public class ChartManager {
-    public static VBox getVboxSCharts(SimulationPointsMap map,
-                               Param xAxisTitle) {
+    public static VBox getVboxSCharts(SimulationPointsMap map, Param xAxisTitle) {
         if (map.getMapSize() == 0) return null;
         VBox vBox = new VBox();
-        vBox.setPrefSize(MainApplication.screenBounds.getWidth()*0.3, MainApplication.screenBounds.getHeight()*0.7);
-        for (Value value : map.getMap().get(0).getValues()) {
+        vBox.setPrefSize(MainApplication.screenBounds.getWidth()*0.3,
+                         MainApplication.screenBounds.getHeight()*0.7);
+        for (Value value : map.getMap().get(0).getValues())
             vBox.getChildren().add(createLineChart(map, value.getParam(), xAxisTitle));
-        }
         return vBox;
     }
 
@@ -41,39 +40,12 @@ public class ChartManager {
         return lineChart;
     }
 
-    //new method for exprm mode
-    public static LineChart createMultiLineChart(SimulationPointsMap[] maps, Param yAxis, Param xAxis){
-        NumberAxis xNAx = new NumberAxis();
-        NumberAxis yNAx = new NumberAxis();
-        xNAx.setLabel(xAxis.getName());
-        yNAx.setLabel(yAxis.getName());
-        LineChart lineChart = new LineChart(xNAx, yNAx);
-        for (SimulationPointsMap map : maps){
-            lineChart.getData().add(createXYChartSeries(map, yAxis, xAxis));
-        }
-        lineChart.setLegendVisible(false);
-        setChartSaveOption(lineChart);
-        return lineChart;
-    }
-
-    //new method for exprm mode
-    /*public static LineChart addToLineChart(){
-
-    }*/
-
-
-    public static XYChart.Series createXYChartSeries(SimulationPointsMap map,
-                                               Param yAxis,
-                                               Param xAxis){
+    public static XYChart.Series createXYChartSeries(SimulationPointsMap map, Param yAxis, Param xAxis){
         XYChart.Series series = new XYChart.Series();
         series.setName(yAxis.getName());
-        for(int i : map.getMap().keySet()){
-            if(Param.TAU.equals(xAxis)){
-                series.getData().add(new XYChart.Data(i* P.K, map.getPointValue(i, yAxis)));
-            } else {
-                series.getData().add(new XYChart.Data(i, map.getPointValue(i, yAxis)));
-            }
-        }
+        for(int i : map.getMap().keySet())
+            if(Param.TAU.equals(xAxis)) series.getData().add(new XYChart.Data(i * P.K, map.getPointValue(i, yAxis)));
+            else series.getData().add(new XYChart.Data(i, map.getPointValue(i, yAxis)));
         return series;
     }
 
